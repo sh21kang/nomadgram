@@ -1,20 +1,37 @@
-import { createStore, combineReducers,applyMiddleware } from "redux";
-import  users from './modules/users';
-import thunk from 'redux-thunk';
+import { combineReducers, createStore, applyMiddleware } from "redux";
+import { routerReducer, routerMiddleware } from "react-router-redux";
+import createHistory from "history/createBrowserHistory";
+import thunk from "redux-thunk";
+import user from "./modules/user";
+import {composeWithDevTools} from 'redux-devtools-extension';
+import {i18nState} from 'redux-i18n';   
 
 
-const middlewares =[thunk];
 const env = process.env.NODE_ENV;
 
-if(env ==="development"){
-    const {logger} = require('redux-logger');
-    middlewares.push(logger);
+const history = createHistory();
+
+const middlewares = [thunk, routerMiddleware(history)];
+
+if (env === "development") {
+  const { logger } = require("redux-logger");
+  middlewares.push(logger);
 }
 
 const reducer = combineReducers({
-    users   
-})
+  user,
+  routing: routerReducer,
+  i18nState
+});
 
-let store = initialState => createStore(reducer,applyMiddleware(...middlewares));   //unpack the array ...
+let store;
+if(env==="development"){
+    store= initialState =>
+    createStore(reducer,  composeWithDevTools(applyMiddleware(...middlewares)) );  
+}else{
+    store= initialState =>
+    createStore(reducer,  applyMiddleware(...middlewares));  
+}
+export { history };
 
 export default store();
