@@ -1,12 +1,17 @@
 import React, {Component} from "react";
 import LoginForm from "./presenter";
-
+import PropTypes from "prop-types";
 class Container extends Component{
     state={
         userName : '',
         passWord : ''
-    }
+    };
     
+     static propTypes = {
+        facebookLogin : PropTypes.func.isRequired,
+        usernameLogin : PropTypes.func.isRequired
+    };
+
     render(){
         const {userName, passWord} = this.state;
         return <LoginForm 
@@ -25,11 +30,17 @@ class Container extends Component{
         
     }
     _handleSubmit = event => {
+        const {usernameLogin} = this.props;
+        const {userName, passWord} = this.state;
+
         event.preventDefault();
+        usernameLogin(userName, passWord);
     }
 
     _handleFacebookLogin = response => {
         console.log(response);
+        const {facebookLogin} = this.props;
+        facebookLogin(response.accessToken);
     }
 
 }

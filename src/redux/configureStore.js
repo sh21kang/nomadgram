@@ -1,11 +1,11 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
 import { routerReducer, routerMiddleware } from "react-router-redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 import createHistory from "history/createBrowserHistory";
 import thunk from "redux-thunk";
-import user from "./modules/user";
-import {composeWithDevTools} from 'redux-devtools-extension';
-import {i18nState} from 'redux-i18n';   
-
+import user from "redux/modules/user";
+import photos from "redux/modules/photos";
+import { i18nState } from "redux-i18n";
 
 const env = process.env.NODE_ENV;
 
@@ -20,18 +20,20 @@ if (env === "development") {
 
 const reducer = combineReducers({
   user,
+  photos,
   routing: routerReducer,
   i18nState
 });
 
 let store;
-if(env==="development"){
-    store= initialState =>
-    createStore(reducer,  composeWithDevTools(applyMiddleware(...middlewares)) );  
-}else{
-    store= initialState =>
-    createStore(reducer,  applyMiddleware(...middlewares));  
+
+if (env === "development") {
+  store = initialState =>
+    createStore(reducer, composeWithDevTools(applyMiddleware(...middlewares)));
+} else {
+  store = initialState => createStore(reducer, applyMiddleware(...middlewares));
 }
+
 export { history };
 
 export default store();
