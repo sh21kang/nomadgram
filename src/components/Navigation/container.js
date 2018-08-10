@@ -4,18 +4,23 @@ import Navigation from "./presenter";
 
 class Container extends Component {
   state = {
-    term: ""
+    term: "",
+    seeingLikes: false
   };
+  
   static propTypes = {
     goToSearch: PropTypes.func.isRequired
   };
   render() {
-    const { term } = this.state;
+    const { term,seeingLikes } = this.state;
     return (
       <Navigation
         onSubmit={this._onSubmit}
         onInputChange={this._onInputChange}
+        openLikes={this._openLikes}
+        closeLikes ={this._closeLikes}
         value={term}
+        seeingLikes={seeingLikes}
       />
     );
   }
@@ -32,6 +37,19 @@ class Container extends Component {
     goToSearch(term);
     this.setState({
       term: ""
+    });
+  };
+
+  _openLikes = () => {
+    const { getPhotoLikes } = this.props;
+    this.setState({
+      seeingLikes: true
+    });
+    getPhotoLikes();
+  };
+  _closeLikes = () => {
+    this.setState({
+      seeingLikes: false
     });
   };
 }
